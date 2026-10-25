@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: askepedia-backend
+  jackson:
+    serialization:
+      indent-output: true
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.askepedia: DEBUG
