@@ -12,3 +12,10 @@ logging:
   level:
     root: INFO
     com.askepedia: DEBUG
+
+askepedia:
+  wikipedia:
+    base-url: "https://en.wikipedia.org/api/rest_v1"
+    user-agent: "Askepedia/0.1.0 (https://github.com/NavieenRamesh/Askepedia; contact: navieen.ramesh@bonbloc.com)"
+    connect-timeout-ms: 5000
+    read-timeout-ms: 10000
