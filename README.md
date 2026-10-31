@@ -112,12 +112,17 @@ Expected Response:
 }
 ```
 
+### 5. Fetch a Wikipedia article (Phase 2)
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8080/api/articles?title=Solar_panel" | ConvertTo-Json -Depth 3
+```
+
 ---
 
 ## 🗺️ 12-Week Roadmap Tracking
 
 - [x] **Week 1 (Phase 1): Project Setup and GitHub** — Spring Boot app, health endpoint, tests, docs, and git setup.
-- [ ] **Week 2 (Phase 2): Wikipedia Integration** — Fetch articles, parse metadata, error handling, DTOs.
+- [x] **Week 2 (Phase 2): Wikipedia Integration** — Fetch articles, parse metadata, error handling, DTOs.
 - [ ] **Week 3 (Phase 3): PostgreSQL Integration & Schema** — Flyway migrations, article & passage entities, JDBC DAOs.
 - [ ] **Week 4 (Phase 4): Article Ingestion & Passage Splitting** — Chunking algorithm, idempotency, batch import.
 - [ ] **Week 5 (Phase 5): PostgreSQL Full-Text Search** — `tsvector`, `websearch_to_tsquery`, ranking, query optimization.
