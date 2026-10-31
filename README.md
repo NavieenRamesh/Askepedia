@@ -117,6 +117,18 @@ Expected Response:
 Invoke-RestMethod -Uri "http://localhost:8080/api/articles?title=Solar_panel" | ConvertTo-Json -Depth 3
 ```
 
+### 6. Ingest an article and split into passages (Phase 4)
+```powershell
+$body = @{ title = "Solar panel" } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:8080/api/ingestion/articles" -Method Post -Body $body -ContentType "application/json" | ConvertTo-Json
+```
+
+### 7. Ingest a batch of articles (Phase 4)
+```powershell
+$batch = @{ titles = @("Solar panel", "Photovoltaics", "Renewable energy") } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://localhost:8080/api/ingestion/batch" -Method Post -Body $batch -ContentType "application/json" | ConvertTo-Json
+```
+
 ---
 
 ## 🗺️ 12-Week Roadmap Tracking
@@ -124,7 +136,7 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/articles?title=Solar_panel" | 
 - [x] **Week 1 (Phase 1): Project Setup and GitHub** — Spring Boot app, health endpoint, tests, docs, and git setup.
 - [x] **Week 2 (Phase 2): Wikipedia Integration** — Fetch articles, parse metadata, error handling, DTOs.
 - [x] **Week 3 (Phase 3): PostgreSQL Integration & Schema** — Flyway migrations, article & passage entities, JDBC DAOs.
-- [ ] **Week 4 (Phase 4): Article Ingestion & Passage Splitting** — Chunking algorithm, idempotency, batch import.
+- [x] **Week 4 (Phase 4): Article Ingestion & Passage Splitting** — Chunking algorithm, idempotency, batch import.
 - [ ] **Week 5 (Phase 5): PostgreSQL Full-Text Search** — `tsvector`, `websearch_to_tsquery`, ranking, query optimization.
 - [ ] **Week 6 (Phase 6): Local Language Model Integration** — Ollama client, prompt templates, streaming responses.
 - [ ] **Week 7 (Phase 7): Evidence-Grounded RAG Pipeline** — Context injection, hallucination prevention, source citations.

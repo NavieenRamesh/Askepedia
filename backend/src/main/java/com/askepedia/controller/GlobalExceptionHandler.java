@@ -5,6 +5,7 @@ import com.askepedia.exception.ArticleNotFoundException;
 import com.askepedia.exception.WikipediaApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -26,12 +27,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, MissingServletRequestParameterException.class})
+    @ExceptionHandler({
+            IllegalArgumentException.class,
+            MissingServletRequestParameterException.class,
+            MethodArgumentNotValidException.class
+    })
     public ResponseEntity<ErrorResponse> handleBadRequest(Exception ex) {
+        String message = ex.getMessage();
+        if (ex instanceof MethodArgumentNotValidException valEx && valEx.getBindingResult().getFieldError() != null) {
+            message = valEx.getBindingResult().getFieldError().getDefaultMessage();
+        }
         ErrorResponse error = ErrorResponse.of(
                 HttpStatus.BAD_REQUEST.value(),
                 "Bad Request",
-                ex.getMessage()
+                message
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
