@@ -1,5 +1,6 @@
 package com.askepedia.dao;
 
+import com.askepedia.dto.SearchResult;
 import com.askepedia.entity.Passage;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -25,6 +26,16 @@ public class PassageDao {
             rs.getInt("sequence_no"),
             rs.getString("passage_text"),
             rs.getTimestamp("created_at").toInstant()
+    );
+
+    private static final RowMapper<SearchResult> SEARCH_RESULT_ROW_MAPPER = (rs, rowNum) -> new SearchResult(
+            rs.getLong("passage_id"),
+            rs.getLong("article_id"),
+            rs.getString("article_title"),
+            rs.getString("source_url"),
+            rs.getInt("sequence_no"),
+            rs.getString("passage_text"),
+            rs.getDouble("score")
     );
 
     public PassageDao(JdbcClient jdbcClient) {
@@ -97,6 +108,37 @@ public class PassageDao {
                 .param("sequenceNo", sequenceNo)
                 .query(PASSAGE_ROW_MAPPER)
                 .optional();
+    }
+
+    /**
+     * Executes a full-text search across all stored passages using PostgreSQL's
+     * websearch_to_tsquery and ts_rank algorithms, joining with wiki_article for source attribution.
+     *
+     * @param query search query
+     * @param limit maximum passages to return
+     * @return list of ranked SearchResult records
+     */
+    public List<SearchResult> searchPassages(String query, int limit) {
+        String sql = """
+            SELECT p.passage_id,
+                   p.article_id,
+                   a.title AS article_title,
+                   a.source_url,
+                   p.sequence_no,
+                   p.passage_text,
+                   ts_rank(p.search_vector, websearch_to_tsquery('english', :query)) AS score
+            FROM wiki_passage p
+            JOIN wiki_article a ON p.article_id = a.article_id
+            WHERE p.search_vector @@ websearch_to_tsquery('english', :query)
+            ORDER BY score DESC, p.sequence_no ASC
+            LIMIT :limit
+            """;
+
+        return jdbcClient.sql(sql)
+                .param("query", query)
+                .param("limit", limit)
+                .query(SEARCH_RESULT_ROW_MAPPER)
+                .list();
     }
 
     public long count() {

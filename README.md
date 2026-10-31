@@ -129,6 +129,15 @@ $batch = @{ titles = @("Solar panel", "Photovoltaics", "Renewable energy") } | C
 Invoke-RestMethod -Uri "http://localhost:8080/api/ingestion/batch" -Method Post -Body $batch -ContentType "application/json" | ConvertTo-Json
 ```
 
+### 8. Full-Text Search (Phase 5)
+```powershell
+# Basic keyword search
+Invoke-RestMethod -Uri "http://localhost:8080/api/search?q=photovoltaic" | ConvertTo-Json -Depth 4
+
+# Exact phrase search with custom limit
+Invoke-RestMethod -Uri "http://localhost:8080/api/search?q=%22solar%20cell%22&limit=5" | ConvertTo-Json -Depth 4
+```
+
 ---
 
 ## 🗺️ 12-Week Roadmap Tracking
@@ -137,7 +146,7 @@ Invoke-RestMethod -Uri "http://localhost:8080/api/ingestion/batch" -Method Post 
 - [x] **Week 2 (Phase 2): Wikipedia Integration** — Fetch articles, parse metadata, error handling, DTOs.
 - [x] **Week 3 (Phase 3): PostgreSQL Integration & Schema** — Flyway migrations, article & passage entities, JDBC DAOs.
 - [x] **Week 4 (Phase 4): Article Ingestion & Passage Splitting** — Chunking algorithm, idempotency, batch import.
-- [ ] **Week 5 (Phase 5): PostgreSQL Full-Text Search** — `tsvector`, `websearch_to_tsquery`, ranking, query optimization.
+- [x] **Week 5 (Phase 5): PostgreSQL Full-Text Search** — `tsvector`, `websearch_to_tsquery`, ranking, query optimization.
 - [ ] **Week 6 (Phase 6): Local Language Model Integration** — Ollama client, prompt templates, streaming responses.
 - [ ] **Week 7 (Phase 7): Evidence-Grounded RAG Pipeline** — Context injection, hallucination prevention, source citations.
 - [ ] **Week 8 (Phase 8): RAG Reliability & Testing** — Insufficient evidence handling, evaluation question set.
